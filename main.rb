@@ -31,7 +31,7 @@ class Main
   ]
 
   def initialize
-    @bot = Discordrb::Commands::CommandBot.new token: ENV["THE_BUTTON_TOKEN"], client_id: 870326478116630558, prefix: "!"
+    @bot = Discordrb::Commands::CommandBot.new token: ENV["THE_BUTTON_TOKEN"], client_id: 870326478116630558, prefix: "-"
     @db = Database.new("data.json")
   end
 
@@ -81,12 +81,12 @@ class Main
     end
 
     @bot.command(:start) do |event|
-
-      @db.just_pressed
+      @db.button_just_pressed
+      event.respond "The Button has started! Good luck!"
       return
     end
 
-    @bot.command(:button) do |event|
+    @bot.command(:help) do |event|
       event.respond <<-STR
     The Button is a social experiment of sorts... The Button is forever ticking down to its inevitable death, if the button is pushed
     the its death clock is reset. The player who pushed the button recieves a rank based on how close the button was to death. The closer
@@ -103,7 +103,7 @@ class Main
   end
 
   def death_message
-    "The Button has died!! Oh no you fool! :crying:"
+    "The Button has died!! Oh no you fool! :cry:"
   end
 end
 
