@@ -1,12 +1,19 @@
 class Database
 
-  def initialize(path)
-    @file_path = path
+  require 'redis'
+
+  def initialize()
+    uri = URI.parse(ENV["REDISTOGO_URL"])
+    @redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   end
 
   def get_data
-    file = File.read(@file_path)
-    JSON.parse(file)
+    file = @redis.get("data.json")
+    if file
+      JSON.parse(file)
+    else
+      {"users" => [], "last_pressed" => ""}
+    end
   end
 
   def user(id)
@@ -34,7 +41,7 @@ class Database
   end
 
   def write(data)
-    File.write(@file_path, JSON.dump(data))
+    @redis.set("data.json", JSON.dump(data))
   end
 
   def button_last_pressed
@@ -44,7 +51,7 @@ class Database
 
   def button_just_pressed
     data = get_data
-    data["last_pressed"] = Date.today
+    data["last_pressed"] = Time.now
     write data
   end
 

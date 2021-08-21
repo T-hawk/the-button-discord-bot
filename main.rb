@@ -30,9 +30,11 @@ class Main
     ":unicorn:"
   ]
 
+  $time_interval = 2
+
   def initialize
     @bot = Discordrb::Commands::CommandBot.new token: ENV["THE_BUTTON_TOKEN"], client_id: 870326478116630558, prefix: "-"
-    @db = Database.new("data.json")
+    @db = Database.new()
   end
 
   def run
@@ -49,9 +51,9 @@ class Main
 
         role = event.user.server.roles.find {|role| role.name == $ranks[current_rank] }
         event.user.add_role(role)
+        event.respond "Button Pushed, your new rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
         @db.update_user_rank(event.user.id, event.user.name, $ranks[current_rank])
         @db.button_just_pressed
-        event.respond "Button Pushed, your new rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
         return
       else
         event.respond death_message
@@ -76,7 +78,7 @@ class Main
           event.respond death_message
         end
       else
-        event.respond "Game has not started yet. An admin must use the !start command"
+        event.respond "Game has not started yet. An admin must use the -start command"
       end
     end
 
@@ -93,13 +95,17 @@ class Main
     it is do death, the higher the rank. The ranking is as follows:
 
     :lady_beetle: :bee: :mouse2: :rabbit2: :cat2: :dog2: :giraffe: :dragon: :shark: :unicorn:
+
+    Use `-push` to push the button
+    Use `-status` to see what rank the button is on
+    Use `-rank` to find out your current rank
       STR
     end
     @bot.run
   end
 
   def current_rank
-    (Date.today - Date.parse(@db.button_last_pressed)).to_i
+    (((Time.now - Time.parse(@db.button_last_pressed))/3600)/$time_interval).floor
   end
 
   def death_message
