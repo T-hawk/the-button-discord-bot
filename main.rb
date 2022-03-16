@@ -6,31 +6,37 @@ class Main
 
 
   $ranks = [
-    "Ladybug",
-    "Bumblebee",
-    "Mouse",
-    "Rabbit",
-    "Cat",
-    "Dog",
-    "Giraffe",
-    "Dragon",
-    "Shark",
-    "Unicorn"
+    "Potato",
+    "Strawberry",
+    "Egg",
+    "Bread",
+    "Pickle",
+    "Pepper",
+    "Pizza",
+    "Burger",
+    "Taco",
+    "Bacon",
+    "Cheese",
+    "Croissant",
+    "Milk"
   ]
   $rank_emojis = [
-    ":lady_beetle:",
-    ":bee:",
-    ":mouse2:",
-    ":rabbit2:",
-    ":cat2:",
-    ":dog2:",
-    ":giraffe:",
-    ":dragon:",
-    ":shark:",
-    ":unicorn:"
+    ":potato:",
+    ":strawberry:",
+    ":egg:",
+    ":bread:",
+    ":cucumber:",
+    ":hot_pepper:",
+    ":pizza:",
+    ":burger:",
+    ":taco:",
+    ":bacon:",
+    ":cheese:",
+    ":croissant:",
+    ":milk:"
   ]
 
-  $time_interval = 2
+  $time_interval = 1.5
 
   def initialize
     @bot = Discordrb::Commands::CommandBot.new token: ENV["THE_BUTTON_TOKEN"], client_id: 870326478116630558, prefix: "-"
@@ -82,7 +88,8 @@ class Main
       end
     end
 
-    @bot.command(:start) do |event|
+    @bot.command(:reset) do |event|
+      @db.reset
       @db.button_just_pressed
       event.respond "The Button has started! Good luck!"
       return
@@ -92,9 +99,7 @@ class Main
       event.respond <<-STR
     The Button is a social experiment of sorts... The Button is forever ticking down to its inevitable death, if the button is pushed
     the its death clock is reset. The player who pushed the button recieves a rank based on how close the button was to death. The closer
-    it is do death, the higher the rank. The ranking is as follows:
-
-    :lady_beetle: :bee: :mouse2: :rabbit2: :cat2: :dog2: :giraffe: :dragon: :shark: :unicorn:
+    it is do death, the higher the rank. Have fun!
 
     Use `-push` to push the button
     Use `-status` to see what rank the button is on

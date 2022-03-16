@@ -7,6 +7,10 @@ class Database
     @redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   end
 
+  def reset
+    write({"users" => [], "last_pressed" => ""})
+  end
+
   def get_data
     file = @redis.get("data.json")
     if file
