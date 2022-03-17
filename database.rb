@@ -30,16 +30,17 @@ class Database
     return nil
   end
 
-  def update_user_rank(id, name, rank)
+  def update_user_rank(id, name, rank, rank_emoji)
     data = get_data
     data["users"].each_with_index do |user, index|
       if user["id"] == id
         data["users"][index]["rank"] = rank
+        data["users"][index]["rank_emoji"] = rank_emoji
         write data
         return
       end
     end
-    data["users"].push({"id" => id, "name" => name, "rank" => rank})
+    data["users"].push({"id" => id, "name" => name, "rank" => rank, "rank_emoji" => rank_emoji})
 
     write data
   end

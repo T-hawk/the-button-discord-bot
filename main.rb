@@ -4,7 +4,6 @@ class Main
   require_relative './user.rb'
   require_relative './database.rb'
 
-
   $ranks = [
     "Potato",
     "Strawberry",
@@ -58,7 +57,7 @@ class Main
         role = event.user.server.roles.find {|role| role.name == $ranks[current_rank] }
         event.user.add_role(role)
         event.respond "Button Pushed, your new rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
-        @db.update_user_rank(event.user.id, event.user.name, $ranks[current_rank])
+        @db.update_user_rank(event.user.id, event.user.name, $ranks[current_rank], $rank_emojis[current_rank])
         @db.button_just_pressed
         return
       else
@@ -70,7 +69,7 @@ class Main
     @bot.command(:rank) do |event|
       user = @db.user(event.user.id)
       if user
-        event.respond "#{user['name']}'s rank is #{user['rank']}"
+        event.respond "#{user['name']}'s rank is #{user['rank_emoji']} #{user['rank']} #{user['rank_emoji']}"
       else
         event.respond "#{event.user.username} doesn't have a rank"
       end
