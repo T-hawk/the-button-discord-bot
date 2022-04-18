@@ -27,7 +27,7 @@ class Main
     ":cucumber:",
     ":hot_pepper:",
     ":pizza:",
-    ":burger:",
+    ":hamburger:",
     ":taco:",
     ":bacon:",
     ":cheese:",
@@ -56,7 +56,10 @@ class Main
 
         role = event.user.server.roles.find {|role| role.name == $ranks[current_rank] }
         event.user.add_role(role)
-        event.respond "Button Pushed, your new rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
+        event.send_embed do |embed|
+          embed.title = "#{$rank_emojis[current_rank]} Button Pushed your new rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
+          embed.color = "#fc1c03"
+        end
         @db.update_user_rank(event.user.id, event.user.name, $ranks[current_rank], $rank_emojis[current_rank])
         @db.button_just_pressed
         return
@@ -78,7 +81,12 @@ class Main
     @bot.command(:status) do |event|
       if !@db.button_last_pressed.empty?
         if current_rank < $ranks.length
-          event.respond "#{$ranks[current_rank]} #{$rank_emojis[current_rank]} is the current rank"
+          #event.respond "#{$ranks[current_rank]} #{$rank_emojis[current_rank]} is the current rank"
+          event.send_embed do |embed|
+            embed.title = status_title
+            embed.description = "The current rank is #{$ranks[current_rank]} #{$rank_emojis[current_rank]}"
+            embed.color = "#fc1c03"
+          end
         else
           event.respond death_message
         end
@@ -110,6 +118,18 @@ class Main
 
   def current_rank
     (((Time.now - Time.parse(@db.button_last_pressed))/3600)/$time_interval).floor
+  end
+
+  def status_title
+    string = ""
+    $rank_emojis.each_with_index do |rank, index|
+      if current_rank >= index
+        string += rank
+      else
+        string += " ?"
+      end
+    end
+    return string
   end
 
   def death_message
